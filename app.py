@@ -96,17 +96,32 @@ with tab5:
     if not groq_client:
         st.warning("Set GROQ_API_KEY in a .env file to enable.")
     else:
-        q = st.text_input("Ask about cricket stats")
+        if "chat" not in st.session_state:
+            st.session_state.chat = []
+        for m in st.session_state.chat:
+            with st.chat_message(m["role"]):
+                st.write(m["content"])
+        q = st.chat_input("Ask about cricket stats")
         if q:
+            st.session_state.chat.append({"role": "user", "content": q})
+            with st.chat_message("user"):
+                st.write(q)
             context = f"Batting data:\n{batting_df.to_string(index=False)}\n\nBowling data:\n{bowling_df.to_string(index=False)}"
-            resp = groq_client.chat.completions.create(
-                model="openai/gpt-oss-20b",
-                messages=[
-                    {"role": "system", "content": "You are a cricket stats assistant. Use the provided data."},
-                    {"role": "user", "content": f"{context}\n\nQuestion: {q}"},
-                ],
-            )
-            st.write(resp.choices[0].message.content)
+            msgs = [{"role": "system", "content": "You are a cricket stats assistant. Use the provided data."}] + st.session_state.chat
+            msgs[0]["content"] += "\n\n" + context
+            with st.chat_message("assistant"):
+                placeholder = st.empty()
+                full = ""
+                stream = groq_client.chat.completions.create(
+                    model="openai/gpt-oss-20b",
+                    messages=msgs,
+                    stream=True,
+                )
+                for chunk in stream:
+                    delta = chunk.choices[0].delta.content or ""
+                    full += delta
+                    placeholder.write(full)
+            st.session_state.chat.append({"role": "assistant", "content": full})
 
 st.sidebar.header("Player Lookup")
 selected = st.sidebar.selectbox("Select Player", batting_df["Player"].tolist())
