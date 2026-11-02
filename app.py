@@ -42,7 +42,7 @@ bowling_data = {
 batting_df = pd.DataFrame(batting_data)
 bowling_df = pd.DataFrame(bowling_data)
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Batting", "Bowling", "Leaderboard", "Compare", "AI Assistant"])
+tab1, tab2, tab3, tab4 = st.tabs(["Batting", "Bowling", "Leaderboard", "Compare"])
 
 with tab1:
     st.subheader("Batting Stats")
@@ -91,8 +91,7 @@ with tab4:
         fig = px.bar(cmp_df, x="Player", y=["Runs", "Centuries", "Fifties"], barmode="group", title="Comparison")
         st.plotly_chart(fig, use_container_width=True)
 
-with tab5:
-    st.subheader("AI Assistant (Groq)")
+with st.popover("🤖 AI", help="Chat with cricket stats AI"):
     if not groq_client:
         st.warning("Set GROQ_API_KEY in a .env file to enable.")
     else:
