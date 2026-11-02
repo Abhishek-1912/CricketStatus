@@ -15,9 +15,6 @@ st.set_page_config(page_title="Cricket Stats", page_icon="🏏", layout="wide")
 st.title("🏏 Cricket Stats Dashboard")
 
 
-bat_file = st.sidebar.file_uploader("Batting CSV", type="csv")
-bowl_file = st.sidebar.file_uploader("Bowling CSV", type="csv")
-
 batting_data = {
     "Player": ["Virat Kohli", "Rohit Sharma", "Steve Smith", "Joe Root", "Kane Williamson",
                "Babar Azam", "David Warner", "Quinton de Kock", "Shakib Al Hasan", "Jos Buttler"],
@@ -43,8 +40,8 @@ bowling_data = {
     "Best": ["6/19", "5/28", "7/18", "6/33", "7/59", "6/35", "6/16", "6/28", "5/27", "6/43"],
 }
 
-batting_df = pd.read_csv(bat_file) if bat_file else pd.DataFrame(batting_data)
-bowling_df = pd.read_csv(bowl_file) if bowl_file else pd.DataFrame(bowling_data)
+batting_df = pd.DataFrame(batting_data)
+bowling_df = pd.DataFrame(bowling_data)
 
 with st.popover("🤖 AI", help="Chat with cricket stats AI"):
     if not groq_client:
