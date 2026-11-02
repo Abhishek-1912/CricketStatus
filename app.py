@@ -1,6 +1,11 @@
-import streamlit as st
-import pandas as pd
-import plotly.express as px
+import os
+from dotenv import load_dotenv
+from groq import Groq
+
+load_dotenv()
+groq_client = None
+if os.getenv("GROQ_API_KEY"):
+    groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 st.set_page_config(page_title="Cricket Stats", page_icon="🏏", layout="wide")
 
@@ -34,7 +39,7 @@ bowling_data = {
 batting_df = pd.DataFrame(batting_data)
 bowling_df = pd.DataFrame(bowling_data)
 
-tab1, tab2, tab3, tab4 = st.tabs(["Batting", "Bowling", "Leaderboard", "Compare"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Batting", "Bowling", "Leaderboard", "Compare", "AI Assistant"])
 
 with tab1:
     st.subheader("Batting Stats")
@@ -82,6 +87,23 @@ with tab4:
         st.dataframe(cmp_df, use_container_width=True)
         fig = px.bar(cmp_df, x="Player", y=["Runs", "Centuries", "Fifties"], barmode="group", title="Comparison")
         st.plotly_chart(fig, use_container_width=True)
+
+with tab5:
+    st.subheader("AI Assistant (Groq)")
+    if not groq_client:
+        st.warning("Set GROQ_API_KEY in a .env file to enable.")
+    else:
+        q = st.text_input("Ask about cricket stats")
+        if q:
+            context = f"Batting data:\n{batting_df.to_string(index=False)}\n\nBowling data:\n{bowling_df.to_string(index=False)}"
+            resp = groq_client.chat.completions.create(
+                model="llama-3.1-8b-instant",
+                messages=[
+                    {"role": "system", "content": "You are a cricket stats assistant. Use the provided data."},
+                    {"role": "user", "content": f"{context}\n\nQuestion: {q}"},
+                ],
+            )
+            st.write(resp.choices[0].message.content)
 
 st.sidebar.header("Player Lookup")
 selected = st.sidebar.selectbox("Select Player", batting_df["Player"].tolist())
