@@ -100,7 +100,7 @@ with tab5:
         if q:
             context = f"Batting data:\n{batting_df.to_string(index=False)}\n\nBowling data:\n{bowling_df.to_string(index=False)}"
             resp = groq_client.chat.completions.create(
-                model="llama-3.1-8b-instant",
+                model="llama-3.3-70b-versatile",
                 messages=[
                     {"role": "system", "content": "You are a cricket stats assistant. Use the provided data."},
                     {"role": "user", "content": f"{context}\n\nQuestion: {q}"},
