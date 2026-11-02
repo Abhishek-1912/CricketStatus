@@ -14,6 +14,35 @@ st.set_page_config(page_title="Cricket Stats", page_icon="🏏", layout="wide")
 
 st.title("🏏 Cricket Stats Dashboard")
 
+
+batting_data = {
+    "Player": ["Virat Kohli", "Rohit Sharma", "Steve Smith", "Joe Root", "Kane Williamson",
+               "Babar Azam", "David Warner", "Quinton de Kock", "Shakib Al Hasan", "Jos Buttler"],
+    "Country": ["India", "India", "Australia", "England", "New Zealand",
+                "Pakistan", "Australia", "South Africa", "Bangladesh", "England"],
+    "Matches": [292, 262, 150, 170, 160, 120, 160, 140, 240, 180],
+    "Runs": [13848, 10709, 9685, 12000, 8750, 6000, 6900, 6800, 7500, 5500],
+    "Average": [58.67, 49.1, 55.4, 50.1, 47.3, 56.7, 45.2, 44.1, 36.5, 38.9],
+    "StrikeRate": [93.2, 89.5, 53.5, 57.2, 82.1, 88.5, 95.0, 95.5, 81.0, 118.0],
+    "Centuries": [50, 31, 32, 30, 27, 19, 20, 17, 14, 11],
+    "Fifties": [72, 55, 31, 58, 33, 34, 33, 39, 51, 26],
+}
+
+bowling_data = {
+    "Player": ["Jasprit Bumrah", "Pat Cummins", "Rashid Khan", "Trent Boult", "Ravichandran Ashwin",
+               "Shaheen Afridi", "Kagiso Rabada", "Mitchell Starc", "Adil Rashid", "Mustafizur Rahman"],
+    "Country": ["India", "Australia", "Afghanistan", "New Zealand", "India",
+                "Pakistan", "South Africa", "Australia", "England", "Bangladesh"],
+    "Matches": [89, 100, 150, 120, 100, 60, 90, 110, 120, 80],
+    "Wickets": [159, 200, 350, 180, 250, 120, 180, 210, 160, 110],
+    "Average": [20.8, 23.5, 21.2, 25.1, 25.3, 24.1, 22.8, 26.0, 28.5, 27.2],
+    "Economy": [4.6, 5.1, 6.2, 5.0, 5.4, 5.3, 5.5, 5.4, 5.8, 5.6],
+    "Best": ["6/19", "5/28", "7/18", "6/33", "7/59", "6/35", "6/16", "6/28", "5/27", "6/43"],
+}
+
+batting_df = pd.DataFrame(batting_data)
+bowling_df = pd.DataFrame(bowling_data)
+
 with st.popover("🤖 AI", help="Chat with cricket stats AI"):
     if not groq_client:
         st.warning("Set GROQ_API_KEY in a .env file to enable.")
@@ -44,34 +73,6 @@ with st.popover("🤖 AI", help="Chat with cricket stats AI"):
                     full += delta
                     placeholder.write(full)
             st.session_state.chat.append({"role": "assistant", "content": full})
-
-batting_data = {
-    "Player": ["Virat Kohli", "Rohit Sharma", "Steve Smith", "Joe Root", "Kane Williamson",
-               "Babar Azam", "David Warner", "Quinton de Kock", "Shakib Al Hasan", "Jos Buttler"],
-    "Country": ["India", "India", "Australia", "England", "New Zealand",
-                "Pakistan", "Australia", "South Africa", "Bangladesh", "England"],
-    "Matches": [292, 262, 150, 170, 160, 120, 160, 140, 240, 180],
-    "Runs": [13848, 10709, 9685, 12000, 8750, 6000, 6900, 6800, 7500, 5500],
-    "Average": [58.67, 49.1, 55.4, 50.1, 47.3, 56.7, 45.2, 44.1, 36.5, 38.9],
-    "StrikeRate": [93.2, 89.5, 53.5, 57.2, 82.1, 88.5, 95.0, 95.5, 81.0, 118.0],
-    "Centuries": [50, 31, 32, 30, 27, 19, 20, 17, 14, 11],
-    "Fifties": [72, 55, 31, 58, 33, 34, 33, 39, 51, 26],
-}
-
-bowling_data = {
-    "Player": ["Jasprit Bumrah", "Pat Cummins", "Rashid Khan", "Trent Boult", "Ravichandran Ashwin",
-               "Shaheen Afridi", "Kagiso Rabada", "Mitchell Starc", "Adil Rashid", "Mustafizur Rahman"],
-    "Country": ["India", "Australia", "Afghanistan", "New Zealand", "India",
-                "Pakistan", "South Africa", "Australia", "England", "Bangladesh"],
-    "Matches": [89, 100, 150, 120, 100, 60, 90, 110, 120, 80],
-    "Wickets": [159, 200, 350, 180, 250, 120, 180, 210, 160, 110],
-    "Average": [20.8, 23.5, 21.2, 25.1, 25.3, 24.1, 22.8, 26.0, 28.5, 27.2],
-    "Economy": [4.6, 5.1, 6.2, 5.0, 5.4, 5.3, 5.5, 5.4, 5.8, 5.6],
-    "Best": ["6/19", "5/28", "7/18", "6/33", "7/59", "6/35", "6/16", "6/28", "5/27", "6/43"],
-}
-
-batting_df = pd.DataFrame(batting_data)
-bowling_df = pd.DataFrame(bowling_data)
 
 tab1, tab2, tab3, tab4 = st.tabs(["Batting", "Bowling", "Leaderboard", "Compare"])
 
